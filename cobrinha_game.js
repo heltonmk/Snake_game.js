@@ -11,13 +11,21 @@ function draw(elementID) {
     snake.eat();
     snake.eat();
     snake.eat();
+
+    foodList = FoodList();
+    foodList.addFood(90, 90);
+
     window.setInterval( function() {
         canvas_elem.width = canvas_elem.width;
-        now = snake.iterate();
-        for (var i=0; i < now.length; i++) {
-            canvas_context.fillRect(now[i].pos_x, now[i].pos_y, GameParameters.block_size, GameParameters.block_size);
-        }
+        snake.iterate();
+        snake.paint(canvas_context);
+        foodList.paint(canvas_context);
+
     }, 200);
+
+    window.setInterval( function() {
+        snake.eat();
+    }, 2000);
 
 
     $(document).keyup( function (e) {
@@ -57,7 +65,6 @@ var Snake = (function() {
 
         for (var i=0; i < blocks.length; i++) {
             var now = blocks[i].iterate();
-            result.push(now);
         }        
         
         // Update speeds
@@ -65,7 +72,16 @@ var Snake = (function() {
             prev_block_speed = blocks[i-1].getSpeed();
             blocks[i].setSpeed(prev_block_speed[0], prev_block_speed[1]);
         }
-        return result;
+        
+    }
+
+    obj.paint = function(canvas_context) {
+        for (var i=0; i < blocks.length; i++) {
+            blocks[i].paint(canvas_context);
+        }
+    }
+    obj.head_position = function() {
+        return blocks[0].getPosition();
     }
 
     obj.eat = function(t) {
@@ -94,6 +110,33 @@ var Snake = (function() {
     }
 
     return obj;
+});
+
+var FoodList = (function() {
+    var obj = {},
+        list = [];
+    obj.addFood = function(x, y) {
+        var _newBlock = Block();
+        _newBlock.init({pos_x:x, pos_y:y, v_x:0, v_y:0});
+        list.push(_newBlock);
+    }
+
+    obj.removeFood = function(x, y) {
+        for (var i=0; i < list.length; i++) {
+            item_pos = list[i].getPosition();
+            if (item_pos[0] == x && item_pos[1] == y) {
+                list.splice(i, 1);
+            }
+        }
+    }
+    
+    obj.paint = function(canvas_context) {
+        for (var i=0; i < list.length; i++) {
+            list[i].paint(canvas_context);
+        }
+    }
+    return obj;
+
 });
 
 var Block = (function() {
@@ -147,9 +190,21 @@ var Block = (function() {
         v_x = GameParameters.block_size;
         v_y = 0;
     }
+    obj.paint = function(canvas_context) {
+        canvas_context.fillRect(pos_x, pos_y, GameParameters.block_size, GameParameters.block_size);
+    }
 
     return obj;
 });
 
+function collisionDetection(snake, foodlist) {
+    
+    for (var i=0; i < list.length; i++) {
+        item_pos = list[i].getPosition();
+        if (item_pos[0] == head_position[0] && item_pos[1] == head_position[1]) {
 
+        }
+    }
+
+}
 draw("drawArea");
