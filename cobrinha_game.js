@@ -4,24 +4,20 @@ function draw(elementID) {
    
     snake = Snake();
     snake.init({pos_x: 40, pos_y: 40, v_x: GameParameters.block_size, v_y: 0});
-    snake.eat();
-    snake.eat();
-    snake.eat();
-    snake.eat();
-    snake.eat();
-    snake.eat();
-    snake.eat();
+    snake.eat(5);
 
     foodList = FoodList();
     foodList.addFood(90, 90);
+    foodList.addFood(30, 180);
 
     window.setInterval( function() {
         canvas_elem.width = canvas_elem.width;
         snake.iterate();
         snake.paint(canvas_context);
+        collisionDetection(snake, foodList);
         foodList.paint(canvas_context);
 
-    }, 200);
+    }, 100);
 
     window.setInterval( function() {
         snake.eat();
@@ -84,16 +80,20 @@ var Snake = (function() {
         return blocks[0].getPosition();
     }
 
-    obj.eat = function(t) {
-        var _new_block = Block();
-        var _last_block_pos = blocks[blocks.length - 1].getPosition();
-        _new_block.init({
-                            pos_x:_last_block_pos[0]-GameParameters.block_size,
-                            pos_y: _last_block_pos[1], 
-                            v_x: GameParameters.block_size, 
-                            v_y: 0});
-        size += 1;
-        blocks.push(_new_block);
+    obj.eat = function(size) {
+        var _new_block, _last_block_pos;
+//        for(var i=0; i < size; i++) { 
+            console.log("entered..");
+            _new_block = Block();
+            _last_block_pos = blocks[blocks.length - 1].getPosition();
+            _new_block.init({
+                                pos_x:_last_block_pos[0]-GameParameters.block_size,
+                                pos_y: _last_block_pos[1], 
+                                v_x: GameParameters.block_size, 
+                                v_y: 0});
+            size += 1;
+            blocks.push(_new_block);
+  //      }
     }
 
     obj.goUp = function() {
@@ -113,26 +113,27 @@ var Snake = (function() {
 });
 
 var FoodList = (function() {
-    var obj = {},
-        list = [];
+    var obj = {};
+    obj.list = [];
+
     obj.addFood = function(x, y) {
         var _newBlock = Block();
         _newBlock.init({pos_x:x, pos_y:y, v_x:0, v_y:0});
-        list.push(_newBlock);
+        obj.list.push(_newBlock);
     }
 
     obj.removeFood = function(x, y) {
-        for (var i=0; i < list.length; i++) {
-            item_pos = list[i].getPosition();
+        for (var i=0; i < obj.list.length; i++) {
+            item_pos = obj.list[i].getPosition();
             if (item_pos[0] == x && item_pos[1] == y) {
-                list.splice(i, 1);
+                obj.list.splice(i, 1);
             }
         }
     }
     
     obj.paint = function(canvas_context) {
-        for (var i=0; i < list.length; i++) {
-            list[i].paint(canvas_context);
+        for (var i=0; i < obj.list.length; i++) {
+            obj.list[i].paint(canvas_context);
         }
     }
     return obj;
@@ -198,12 +199,25 @@ var Block = (function() {
 });
 
 function collisionDetection(snake, foodlist) {
-    
-    for (var i=0; i < list.length; i++) {
-        item_pos = list[i].getPosition();
-        if (item_pos[0] == head_position[0] && item_pos[1] == head_position[1]) {
+    var snakeHeadPos = snake.head_position();
+    var deleteItems = [];
 
+    for (var i=0; i < foodlist.list.length; i++) {
+    
+        item_pos = foodlist.list[i].getPosition();
+        if (item_pos[0] == snakeHeadPos[0] && item_pos[1] == snakeHeadPos[1]) {
+            console.log("found colision!");
+            deleteItems.push(i);
         }
+
+    }
+    for (i=0; i < deleteItems.length; i++) {
+        // Removes element
+        foodlist.list.splice(deleteItems[i], 1);
+        
+        // Snake gets bigger
+        snake.eat(3);
+
     }
 
 }
