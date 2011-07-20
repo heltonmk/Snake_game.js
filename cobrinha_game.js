@@ -206,11 +206,10 @@ function collisionDetection(snake, foodlist) {
     
         item_pos = foodlist.list[i].getPosition();
         if (item_pos[0] == snakeHeadPos[0] && item_pos[1] == snakeHeadPos[1]) {
-            console.log("found colision!");
             deleteItems.push(i);
         }
-
     }
+
     for (i=0; i < deleteItems.length; i++) {
         // Removes element
         foodlist.list.splice(deleteItems[i], 1);

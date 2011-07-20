@@ -1,0 +1,4 @@
+Add game borders
+Add new food each time snake eats
+Add score/levels
+Add game modes: Hardcore, classic
