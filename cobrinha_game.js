@@ -18,7 +18,7 @@ function draw(elementID) {
         snake.iterate();
         eatDetection(snake, foodList);
 
-        if (outOfBoundsDetection(snake)) {
+        if (outOfBoundsDetection(snake) || snake.checkTailCollision()) {
             window.clearInterval(intervalID);
             alert("Game over!");
         }
@@ -47,7 +47,7 @@ function draw(elementID) {
     });
 
 }
-var GameParameters = {block_size:10, board_width:40, board_height:40};
+var GameParameters = {block_size:15, board_width:30, board_height:30};
 var Snake = (function() {
     var obj = {},
         blocks = [],
@@ -88,7 +88,7 @@ var Snake = (function() {
 
     obj.head_position = function() {
         return blocks[0].getPosition();
-    }
+    };
 
     obj.eat = function(size) {
         var _new_block, _last_block_pos;
@@ -103,32 +103,45 @@ var Snake = (function() {
             size += 1;
             blocks.push(_new_block);
   //      }
-    }
+    };
+
+    obj.checkTailCollision = function() {
+        var head_pos = blocks[0].getPosition();
+
+        for (var i=1; i < blocks.length; i++) { // starts with 1, skip head
+            _blockPos = blocks[i].getPosition();
+            if (head_pos[0] == _blockPos[0] && head_pos[1] == _blockPos[1]) {
+                return true;
+            }
+        }
+
+        return false;
+    };
 
     obj.goUp = function() {
         if (state != GO_DOWN) {
             blocks[0].goUp();
             state = GO_UP;
         }
-    }
+    };
     obj.goDown = function() {
         if (state != GO_UP) {
             blocks[0].goDown();
             state = GO_DOWN;
         }
-    }
+    };
     obj.goLeft = function() {
         if (state != GO_RIGHT) {
             blocks[0].goLeft();
             state = GO_LEFT;
         }
-    }
+    };
     obj.goRight = function() {
         if (state != GO_LEFT) {
             blocks[0].goRight();
             state = GO_RIGHT;
         }
-    }
+    };
 
     return obj;
 });
@@ -267,9 +280,8 @@ function outOfBoundsDetection(snake) {
             console.log("Snake x : " + snakeHeadPos[0]);
             console.log("Snake y : " + snakeHeadPos[1]);
             return true;
-   }
-
-   return false;
+    }
+    return false;
    
 
 }
