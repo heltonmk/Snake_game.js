@@ -10,19 +10,20 @@ function draw(elementID) {
     foodList.addFood(90, 90);
     foodList.addFood(30, 180);
 
-    window.setInterval( function() {
+    var intervalID = window.setInterval( function() {
         canvas_elem.width = canvas_elem.width;
+        canvas_context.strokeRect(0, 0, GameParameters.board_width, GameParameters.board_height);
         snake.iterate();
+        eatDetection(snake, foodList);
+
+        if (outOfBoundsDetection(snake)) {
+            window.clearInterval(intervalID);
+            alert("Game over!");
+        }
         snake.paint(canvas_context);
-        collisionDetection(snake, foodList);
         foodList.paint(canvas_context);
 
     }, 100);
-
-    window.setInterval( function() {
-        snake.eat();
-    }, 2000);
-
 
     $(document).keyup( function (e) {
         var code = (e.keyCode ? e.keyCode : e.which);
@@ -44,7 +45,7 @@ function draw(elementID) {
     });
 
 }
-var GameParameters = {block_size:10};
+var GameParameters = {block_size:10, board_width:400, board_height:400};
 var Snake = (function() {
     var obj = {},
         blocks = [],
@@ -83,7 +84,6 @@ var Snake = (function() {
     obj.eat = function(size) {
         var _new_block, _last_block_pos;
 //        for(var i=0; i < size; i++) { 
-            console.log("entered..");
             _new_block = Block();
             _last_block_pos = blocks[blocks.length - 1].getPosition();
             _new_block.init({
@@ -198,10 +198,11 @@ var Block = (function() {
     return obj;
 });
 
-function collisionDetection(snake, foodlist) {
+function eatDetection(snake, foodlist) {
     var snakeHeadPos = snake.head_position();
     var deleteItems = [];
 
+    // Check if snake eats food
     for (var i=0; i < foodlist.list.length; i++) {
     
         item_pos = foodlist.list[i].getPosition();
@@ -216,8 +217,26 @@ function collisionDetection(snake, foodlist) {
         
         // Snake gets bigger
         snake.eat(3);
-
     }
+
+}
+
+function outOfBoundsDetection(snake) {
+    var snakeHeadPos = snake.head_position();
+    if (snakeHeadPos[0] >= GameParameters.board_width ||
+        snakeHeadPos[0] < 0 ||
+        snakeHeadPos[1] > GameParameters.board_height ||
+        snakeHeadPos[1] < 0) {
+            console.log("Out of bounds! Game over!");
+            console.log("Board width: " + GameParameters.board_width);
+            console.log("Board height: " + GameParameters.board_height);
+            console.log("Snake x : " + snakeHeadPos[0]);
+            console.log("Snake y : " + snakeHeadPos[1]);
+            return true;
+   }
+
+   return false;
+   
 
 }
 draw("drawArea");

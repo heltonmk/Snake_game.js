@@ -1,4 +1,5 @@
 Add game borders
+Prevent snake from going back the way it is going now
 Add new food each time snake eats
 Add score/levels
 Add game modes: Hardcore, classic
