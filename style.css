@@ -1,0 +1,16 @@
+body
+{
+    font-family: serif;
+    padding-top: 20px;
+}
+
+.Title {
+    font: 20px;
+}
+
+.GameBox {
+    padding-top: 10px;
+    width: 450px;
+    margin: auto;
+}
+
