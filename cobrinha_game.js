@@ -51,13 +51,19 @@ var GameParameters = {block_size:10, board_width:40, board_height:40};
 var Snake = (function() {
     var obj = {},
         blocks = [],
+        GO_UP = 0,
+        GO_RIGHT = 1,
+        GO_DOWN = 2,
+        GO_LEFT = 3,
+        state = GO_RIGHT,
         size = 1;
 
     obj.init = function(param) {
         var _block = Block();
+        state = GO_RIGHT;
         _block.init(param);
         blocks.push(_block);
-    }
+    };
 
     obj.iterate = function() {
         var result = [];
@@ -72,13 +78,14 @@ var Snake = (function() {
             blocks[i].setSpeed(prev_block_speed[0], prev_block_speed[1]);
         }
         
-    }
+    };
 
     obj.paint = function(canvas_context) {
         for (var i=0; i < blocks.length; i++) {
             blocks[i].paint(canvas_context);
         }
-    }
+    };
+
     obj.head_position = function() {
         return blocks[0].getPosition();
     }
@@ -99,16 +106,28 @@ var Snake = (function() {
     }
 
     obj.goUp = function() {
-        blocks[0].goUp();
+        if (state != GO_DOWN) {
+            blocks[0].goUp();
+            state = GO_UP;
+        }
     }
     obj.goDown = function() {
-        blocks[0].goDown();
+        if (state != GO_UP) {
+            blocks[0].goDown();
+            state = GO_DOWN;
+        }
     }
     obj.goLeft = function() {
-        blocks[0].goLeft();
+        if (state != GO_RIGHT) {
+            blocks[0].goLeft();
+            state = GO_LEFT;
+        }
     }
     obj.goRight = function() {
-        blocks[0].goRight();
+        if (state != GO_LEFT) {
+            blocks[0].goRight();
+            state = GO_RIGHT;
+        }
     }
 
     return obj;
