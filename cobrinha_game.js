@@ -3,16 +3,18 @@ function draw(elementID) {
     var canvas_context = canvas_elem.getContext("2d");
    
     snake = Snake();
-    snake.init({pos_x: 40, pos_y: 40, v_x: GameParameters.block_size, v_y: 0});
+    snake.init({pos_x: 4, pos_y: 4, v_x: 1, v_y: 0});
     snake.eat(5);
 
     foodList = FoodList();
-    foodList.addFood(90, 90);
-    foodList.addFood(30, 180);
+    foodList.addFoodRandom();
 
     var intervalID = window.setInterval( function() {
         canvas_elem.width = canvas_elem.width;
-        canvas_context.strokeRect(0, 0, GameParameters.board_width, GameParameters.board_height);
+        canvas_context.strokeRect(0,
+                                  0,
+                                  GameParameters.board_width*GameParameters.block_size,
+                                  GameParameters.board_height*GameParameters.block_size);
         snake.iterate();
         eatDetection(snake, foodList);
 
@@ -45,7 +47,7 @@ function draw(elementID) {
     });
 
 }
-var GameParameters = {block_size:10, board_width:400, board_height:400};
+var GameParameters = {block_size:10, board_width:40, board_height:40};
 var Snake = (function() {
     var obj = {},
         blocks = [],
@@ -87,9 +89,9 @@ var Snake = (function() {
             _new_block = Block();
             _last_block_pos = blocks[blocks.length - 1].getPosition();
             _new_block.init({
-                                pos_x:_last_block_pos[0]-GameParameters.block_size,
+                                pos_x:_last_block_pos[0]-1,
                                 pos_y: _last_block_pos[1], 
-                                v_x: GameParameters.block_size, 
+                                v_x: 1, 
                                 v_y: 0});
             size += 1;
             blocks.push(_new_block);
@@ -121,6 +123,12 @@ var FoodList = (function() {
         _newBlock.init({pos_x:x, pos_y:y, v_x:0, v_y:0});
         obj.list.push(_newBlock);
     }
+    obj.addFoodRandom = function(x, y) {
+        var x = Math.floor(Math.random() * GameParameters.board_width);
+        var y = Math.floor(Math.random() * GameParameters.board_height);                   
+        console.log("Add food on " + x + " " + y);
+        obj.addFood(x, y);                    
+    }
 
     obj.removeFood = function(x, y) {
         for (var i=0; i < obj.list.length; i++) {
@@ -145,7 +153,7 @@ var Block = (function() {
     var obj = {},
         pos_x = 0,
         pos_y = 0,
-        v_x = GameParameters.block_size,
+        v_x = 1,
         v_y = 0;
 
     obj.init = function(param) {
@@ -176,23 +184,26 @@ var Block = (function() {
     }
 
     obj.goUp = function() {
-        v_y = -1 * GameParameters.block_size;
+        v_y = -1;
         v_x = 0;
     }
     obj.goDown = function() {
-        v_y = GameParameters.block_size;
+        v_y = 1;
         v_x = 0;
     }
     obj.goLeft = function() {
-        v_x = -1 * GameParameters.block_size;
+        v_x = -1;
         v_y = 0;
     }
     obj.goRight = function() {
-        v_x = GameParameters.block_size;
+        v_x = 1;
         v_y = 0;
     }
     obj.paint = function(canvas_context) {
-        canvas_context.fillRect(pos_x, pos_y, GameParameters.block_size, GameParameters.block_size);
+        canvas_context.fillRect(pos_x * GameParameters.block_size,
+                                pos_y * GameParameters.block_size,
+                                GameParameters.block_size,
+                                GameParameters.block_size);
     }
 
     return obj;
@@ -217,6 +228,10 @@ function eatDetection(snake, foodlist) {
         
         // Snake gets bigger
         snake.eat(3);
+
+        // Add food in random location
+        foodlist.addFoodRandom();
+
     }
 
 }
