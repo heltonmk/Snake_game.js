@@ -7,7 +7,7 @@ function draw(elementID) {
     snake.eat();
 
     foodList = FoodList();
-    foodList.addFoodRandom();
+    foodList.addFoodRandom(snake);
 
     var intervalID = window.setInterval( function() {
         canvas_elem.width = canvas_elem.width;
@@ -116,6 +116,17 @@ var Snake = (function() {
         return false;
     };
 
+    obj.isOn = function(x, y) {
+        // Returns true/false if snake is occupying (x,y)
+        for (var i=0; i < blocks.length; i++) {
+            _blockPos = blocks[i].getPosition();
+            if (_blockPos[0] === x && _blockPos[1] === y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     obj.goUp = function() {
         if (state != GO_DOWN) {
             blocks[0].goUp();
@@ -153,9 +164,16 @@ var FoodList = (function() {
         _newBlock.init({pos_x:x, pos_y:y, v_x:0, v_y:0});
         obj.list.push(_newBlock);
     }
-    obj.addFoodRandom = function(x, y) {
-        obj.addFood(Math.floor(Math.random() * GameParameters.board_width),
-                    Math.floor(Math.random() * GameParameters.board_height));
+    obj.addFoodRandom = function(snake) {
+        var x, y;
+        while(true) {
+            x = Math.floor(Math.random() * GameParameters.board_width);
+            y = Math.floor(Math.random() * GameParameters.board_height);
+            if (snake.isOn(x, y) === false) {
+                break;
+            }
+        }
+        obj.addFood(x, y);
     }
 
     obj.removeFood = function(x, y) {
@@ -258,7 +276,7 @@ function eatDetection(snake, foodlist) {
         snake.eat();
 
         // Add food in random location
-        foodlist.addFoodRandom();
+        foodlist.addFoodRandom(snake);
 
     }
 

@@ -1,4 +1,3 @@
-Prevent food to be added where the snake already is
 Add score/levels
 Game over screen/Restart game button
 Design
