@@ -38,6 +38,7 @@ function draw(elementID) {
         if (outOfBoundsDetection(snake) || snake.checkTailCollision()) {
             window.clearInterval(intervalID);
             drawGameOver(canvas_context);
+            gameInitialized = false;
             return;
         }
         snake.paint(canvas_context);
@@ -331,13 +332,16 @@ function outOfBoundsDetection(snake) {
    
 
 }
+var gameInitialized = false;
 $(document).onload = (function() {
     drawWelcomeScreen("drawArea");
     $(document).keyup( function (e) {
         var code = (e.keyCode ? e.keyCode : e.which);
-        console.log(code);
         if (code === 32) {
-            draw("drawArea");
+            if (gameInitialized === false) {
+                draw("drawArea");
+                gameInitialized = true;
+            }
             return false;
         }
     });
