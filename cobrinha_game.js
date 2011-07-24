@@ -107,7 +107,7 @@ var Snake = (function() {
 
         for (var i=1; i < blocks.length; i++) { // starts with 1, skip head
             _blockPos = blocks[i].getPosition();
-            if (head_pos[0] == _blockPos[0] && head_pos[1] == _blockPos[1]) {
+            if (head_pos[0] === _blockPos[0] && head_pos[1] === _blockPos[1]) {
                 console.log("Snake hit himself at " + head_pos[0] + " " + head_pos[1]);
                 return true;
             }
@@ -179,7 +179,7 @@ var FoodList = (function() {
     obj.removeFood = function(x, y) {
         for (var i=0; i < obj.list.length; i++) {
             item_pos = obj.list[i].getPosition();
-            if (item_pos[0] == x && item_pos[1] == y) {
+            if (item_pos[0] === x && item_pos[1] === y) {
                 obj.list.splice(i, 1);
             }
         }
@@ -263,7 +263,7 @@ function eatDetection(snake, foodlist) {
     for (var i=0; i < foodlist.list.length; i++) {
     
         item_pos = foodlist.list[i].getPosition();
-        if (item_pos[0] == snakeHeadPos[0] && item_pos[1] == snakeHeadPos[1]) {
+        if (item_pos[0] === snakeHeadPos[0] && item_pos[1] === snakeHeadPos[1]) {
             deleteItems.push(i);
         }
     }
