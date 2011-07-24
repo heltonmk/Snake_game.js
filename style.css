@@ -5,7 +5,8 @@ body
 }
 
 .Title {
-    font: 20px;
+    font: 20pt;
+    margin: auto;
 }
 
 .GameBox {

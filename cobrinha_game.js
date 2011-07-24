@@ -4,7 +4,7 @@ function draw(elementID) {
    
     snake = Snake();
     snake.init({pos_x: 4, pos_y: 4, v_x: 1, v_y: 0});
-    snake.eat(5);
+    snake.eat();
 
     foodList = FoodList();
     foodList.addFoodRandom();
@@ -29,7 +29,6 @@ function draw(elementID) {
 
     $(document).keyup( function (e) {
         var code = (e.keyCode ? e.keyCode : e.which);
-        console.log(code);
         switch(code) {
             case 37:
                 snake.goLeft();
@@ -47,7 +46,7 @@ function draw(elementID) {
     });
 
 }
-var GameParameters = {block_size:15, board_width:30, board_height:30};
+var GameParameters = {block_size:15, board_width:20, board_height:20};
 var Snake = (function() {
     var obj = {},
         blocks = [],
@@ -90,19 +89,17 @@ var Snake = (function() {
         return blocks[0].getPosition();
     };
 
-    obj.eat = function(size) {
+    obj.eat = function() {
         var _new_block, _last_block_pos;
-//        for(var i=0; i < size; i++) { 
-            _new_block = Block();
-            _last_block_pos = blocks[blocks.length - 1].getPosition();
-            _new_block.init({
-                                pos_x:_last_block_pos[0]-1,
-                                pos_y: _last_block_pos[1], 
-                                v_x: 1, 
-                                v_y: 0});
-            size += 1;
-            blocks.push(_new_block);
-  //      }
+        _new_block = Block();
+        _last_block_pos = blocks[blocks.length - 1].getPosition();
+        _new_block.init({
+                            pos_x:_last_block_pos[0]-1,
+                            pos_y: _last_block_pos[1], 
+                            v_x: 1, 
+                            v_y: 0});
+        size += 1;
+        blocks.push(_new_block);
     };
 
     obj.checkTailCollision = function() {
@@ -111,6 +108,7 @@ var Snake = (function() {
         for (var i=1; i < blocks.length; i++) { // starts with 1, skip head
             _blockPos = blocks[i].getPosition();
             if (head_pos[0] == _blockPos[0] && head_pos[1] == _blockPos[1]) {
+                console.log("Snake hit himself at " + head_pos[0] + " " + head_pos[1]);
                 return true;
             }
         }
@@ -156,10 +154,8 @@ var FoodList = (function() {
         obj.list.push(_newBlock);
     }
     obj.addFoodRandom = function(x, y) {
-        var x = Math.floor(Math.random() * GameParameters.board_width);
-        var y = Math.floor(Math.random() * GameParameters.board_height);                   
-        console.log("Add food on " + x + " " + y);
-        obj.addFood(x, y);                    
+        obj.addFood(Math.floor(Math.random() * GameParameters.board_width),
+                    Math.floor(Math.random() * GameParameters.board_height));
     }
 
     obj.removeFood = function(x, y) {
@@ -259,7 +255,7 @@ function eatDetection(snake, foodlist) {
         foodlist.list.splice(deleteItems[i], 1);
         
         // Snake gets bigger
-        snake.eat(3);
+        snake.eat();
 
         // Add food in random location
         foodlist.addFoodRandom();
@@ -272,7 +268,7 @@ function outOfBoundsDetection(snake) {
     var snakeHeadPos = snake.head_position();
     if (snakeHeadPos[0] >= GameParameters.board_width ||
         snakeHeadPos[0] < 0 ||
-        snakeHeadPos[1] > GameParameters.board_height ||
+        snakeHeadPos[1] >= GameParameters.board_height ||
         snakeHeadPos[1] < 0) {
             console.log("Out of bounds! Game over!");
             console.log("Board width: " + GameParameters.board_width);
@@ -285,4 +281,4 @@ function outOfBoundsDetection(snake) {
    
 
 }
-draw("drawArea");
+$(document).onload = draw("drawArea");
