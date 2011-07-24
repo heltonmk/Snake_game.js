@@ -2,30 +2,12 @@ function draw(elementID) {
     var canvas_elem = document.getElementById(elementID);
     var canvas_context = canvas_elem.getContext("2d");
    
-    snake = Snake();
+    var snake = Snake();
     snake.init({pos_x: 4, pos_y: 4, v_x: 1, v_y: 0});
     snake.eat();
 
-    foodList = FoodList();
+    var foodList = FoodList();
     foodList.addFoodRandom(snake);
-
-    var intervalID = window.setInterval( function() {
-        canvas_elem.width = canvas_elem.width;
-        canvas_context.strokeRect(0,
-                                  0,
-                                  GameParameters.board_width*GameParameters.block_size,
-                                  GameParameters.board_height*GameParameters.block_size);
-        snake.iterate();
-        eatDetection(snake, foodList);
-
-        if (outOfBoundsDetection(snake) || snake.checkTailCollision()) {
-            window.clearInterval(intervalID);
-            alert("Game over!");
-        }
-        snake.paint(canvas_context);
-        foodList.paint(canvas_context);
-
-    }, 100);
 
     $(document).keyup( function (e) {
         var code = (e.keyCode ? e.keyCode : e.which);
@@ -44,9 +26,59 @@ function draw(elementID) {
                 return false;
         }
     });
+    var intervalID = window.setInterval( function() {
+        canvas_elem.width = canvas_elem.width;
+        canvas_context.strokeRect(0,
+                                  0,
+                                  GameParameters.board_width*GameParameters.block_size,
+                                  GameParameters.board_height*GameParameters.block_size);
+        snake.iterate();
+        eatDetection(snake, foodList);
+
+        if (outOfBoundsDetection(snake) || snake.checkTailCollision()) {
+            window.clearInterval(intervalID);
+            drawGameOver(canvas_context);
+            return;
+        }
+        snake.paint(canvas_context);
+        foodList.paint(canvas_context);
+    }, 200);
 
 }
-var GameParameters = {block_size:15, board_width:20, board_height:20};
+
+function drawGameOver(canvas_context) {
+    canvas_context.fillRect(0,
+                            0,
+                            GameParameters.board_width*GameParameters.block_size,
+                            GameParameters.board_height*GameParameters.block_size);
+
+    canvas_context.font = "bold 15px sans-serif";
+    canvas_context.fillStyle = "white";
+
+    canvas_context.fillText("GAME OVER",
+                            70,                                    
+                            (GameParameters.board_width * GameParameters.block_size)/2);
+
+}
+function drawWelcomeScreen(elementID) {
+    var canvas_elem = document.getElementById(elementID);
+    var canvas_context = canvas_elem.getContext("2d");
+    canvas_context.fillRect(0,
+                            0,
+                            GameParameters.board_width*GameParameters.block_size,
+                            GameParameters.board_height*GameParameters.block_size);
+
+    canvas_context.font = "bold 15px sans-serif";
+    canvas_context.fillStyle = "white";
+
+    canvas_context.fillText("Press SPACE to start game!",
+                            70,                                    
+                            (GameParameters.board_width * GameParameters.block_size)/2);
+
+
+}
+
+var GameParameters = {block_size:15, board_width:15, board_height:15};
 var Snake = (function() {
     var obj = {},
         blocks = [],
@@ -299,4 +331,15 @@ function outOfBoundsDetection(snake) {
    
 
 }
-$(document).onload = draw("drawArea");
+$(document).onload = (function() {
+    drawWelcomeScreen("drawArea");
+    $(document).keyup( function (e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        console.log(code);
+        if (code === 32) {
+            draw("drawArea");
+            return false;
+        }
+    });
+
+})();
