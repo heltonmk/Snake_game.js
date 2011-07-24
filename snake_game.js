@@ -114,7 +114,7 @@ var Snake = (function() {
 
     obj.paint = function(canvas_context) {
         for (var i=0; i < blocks.length; i++) {
-            blocks[i].paint(canvas_context);
+            blocks[i].paint(canvas_context, "black");
         }
     };
 
@@ -220,7 +220,7 @@ var FoodList = (function() {
     
     obj.paint = function(canvas_context) {
         for (var i=0; i < obj.list.length; i++) {
-            obj.list[i].paint(canvas_context);
+            obj.list[i].paint(canvas_context, "red");
         }
     }
     return obj;
@@ -278,7 +278,8 @@ var Block = (function() {
         v_x = 1;
         v_y = 0;
     }
-    obj.paint = function(canvas_context) {
+    obj.paint = function(canvas_context, color) {
+        canvas_context.fillStyle = color;
         canvas_context.fillRect(pos_x * GameParameters.block_size,
                                 pos_y * GameParameters.block_size,
                                 GameParameters.block_size,
