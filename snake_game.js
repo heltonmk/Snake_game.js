@@ -4,7 +4,7 @@ function draw(elementID) {
    
     var snake = Snake();
     snake.init({pos_x: 4, pos_y: 4, v_x: 1, v_y: 0});
-    snake.eat();
+    //snake.eat();
 
     var foodList = FoodList();
     foodList.addFoodRandom(snake);
@@ -126,11 +126,11 @@ var Snake = (function() {
         var _new_block, _last_block_pos;
         _new_block = Block();
         _last_block_pos = blocks[blocks.length - 1].getPosition();
-        _new_block.init({
-                            pos_x:_last_block_pos[0]-1,
-                            pos_y: _last_block_pos[1], 
-                            v_x: 1, 
-                            v_y: 0});
+        _last_block_speed = blocks[blocks.length - 1].getSpeed();
+        _new_block.init({ pos_x:_last_block_pos[0] - _last_block_speed[0], 
+                          pos_y: _last_block_pos[1] - _last_block_speed[1], 
+                          v_x: _last_block_speed[0], 
+                          v_y: _last_block_speed[1]});
         size += 1;
         blocks.push(_new_block);
     };
