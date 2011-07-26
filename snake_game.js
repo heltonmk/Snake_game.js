@@ -48,6 +48,13 @@ function draw(elementID) {
 }
 
 function drawGameOver(canvas_context) {
+    var gradient = canvas_context.createLinearGradient(0, 0, 0,
+                                                       GameParameters.board_height * GameParameters.block_size);
+    gradient.addColorStop(0, "black");
+    gradient.addColorStop(1, "#565656");
+    canvas_context.fillStyle = gradient;
+
+
     canvas_context.fillRect(0,
                             0,
                             GameParameters.board_width*GameParameters.block_size,
@@ -70,6 +77,13 @@ function drawGameOver(canvas_context) {
 function drawWelcomeScreen(elementID) {
     var canvas_elem = document.getElementById(elementID);
     var canvas_context = canvas_elem.getContext("2d");
+    var gradient = canvas_context.createLinearGradient(0, 0, 0,
+                                                       GameParameters.board_height * GameParameters.block_size);
+ 
+    gradient.addColorStop(0, "black");
+    gradient.addColorStop(1, "#565656");
+    canvas_context.fillStyle = gradient;
+
     canvas_context.fillRect(0,
                             0,
                             GameParameters.board_width*GameParameters.block_size,
