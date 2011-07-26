@@ -53,12 +53,18 @@ function drawGameOver(canvas_context) {
                             GameParameters.board_width*GameParameters.block_size,
                             GameParameters.board_height*GameParameters.block_size);
 
-    canvas_context.font = "bold 15px sans-serif";
+    canvas_context.font = "bold 30px sans-serif";
     canvas_context.fillStyle = "white";
 
     canvas_context.fillText("GAME OVER",
-                            70,                                    
+                            60,                                    
                             (GameParameters.board_width * GameParameters.block_size)/2);
+
+    canvas_context.font = "bold 15px sans-serif";
+    canvas_context.fillText("Press SPACE to restart game!",
+                            45,                                    
+                            (GameParameters.board_height * GameParameters.block_size)/2 + 30);
+
 
 }
 function drawWelcomeScreen(elementID) {
@@ -69,17 +75,22 @@ function drawWelcomeScreen(elementID) {
                             GameParameters.board_width*GameParameters.block_size,
                             GameParameters.board_height*GameParameters.block_size);
 
+    canvas_context.font = "bold 30px sans-serif";
+    canvas_context.fillStyle = "white";
+    canvas_context.fillText("Snake game", 70, (GameParameters.board_height * GameParameters.block_size)/2 - 10);
+
+
     canvas_context.font = "bold 15px sans-serif";
     canvas_context.fillStyle = "white";
 
     canvas_context.fillText("Press SPACE to start game!",
-                            70,                                    
-                            (GameParameters.board_width * GameParameters.block_size)/2);
+                            55,                                    
+                            (GameParameters.board_height * GameParameters.block_size)/2 + 20);
 
 
 }
 
-var GameParameters = {block_size:15, board_width:15, board_height:15};
+var GameParameters = {block_size:20, board_width:15, board_height:15};
 var Snake = (function() {
     var obj = {},
         blocks = [],
@@ -279,7 +290,16 @@ var Block = (function() {
         v_y = 0;
     }
     obj.paint = function(canvas_context, color) {
-        canvas_context.fillStyle = color;
+        //canvas_context.fillStyle = color;
+        var gradient = canvas_context.createLinearGradient(pos_x * GameParameters.block_size,
+                                                           pos_y * GameParameters.block_size,
+                                                           (pos_x+1) * GameParameters.block_size,
+                                                           (pos_y+1) * GameParameters.block_size);
+        gradient.addColorStop(0, color);
+        gradient.addColorStop(1, "#c9c9c9");
+
+        canvas_context.fillStyle = gradient;
+
         canvas_context.fillRect(pos_x * GameParameters.block_size,
                                 pos_y * GameParameters.block_size,
                                 GameParameters.block_size,
