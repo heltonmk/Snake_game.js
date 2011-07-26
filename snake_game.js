@@ -310,7 +310,7 @@ var Block = (function() {
                                                            (pos_x+1) * GameParameters.block_size,
                                                            (pos_y+1) * GameParameters.block_size);
         gradient.addColorStop(0, color);
-        gradient.addColorStop(1, "#c9c9c9");
+        gradient.addColorStop(1, "#747474");
 
         canvas_context.fillStyle = gradient;
 
