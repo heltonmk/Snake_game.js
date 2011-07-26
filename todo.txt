@@ -2,3 +2,6 @@ Add score/levels
 Game over screen/Restart game button
 Design
 Add game modes: Hardcore, classic
+
+Minify:
+java -jar ../yuicompressor-2.4.6/build/yuicompressor-2.4.6.jar snake_game.js -o snake_game.min.js --charset utf-8
