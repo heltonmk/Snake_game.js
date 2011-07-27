@@ -113,6 +113,7 @@ var Snake = (function() {
         GO_DOWN = 2,
         GO_LEFT = 3,
         state = GO_RIGHT,
+        state_changed, // bool to make only one state change available for each iteration
         size = 1;
 
     obj.init = function(param) {
@@ -135,6 +136,7 @@ var Snake = (function() {
             blocks[i].setSpeed(prev_block_speed[0], prev_block_speed[1]);
         }
         
+        state_changed = false;
     };
 
     obj.paint = function(canvas_context) {
@@ -186,27 +188,31 @@ var Snake = (function() {
     }
 
     obj.goUp = function() {
-        if (state != GO_DOWN) {
+        if (state != GO_DOWN && (state_changed === false)) {
             blocks[0].goUp();
             state = GO_UP;
+            state_changed = true;
         }
     };
     obj.goDown = function() {
-        if (state != GO_UP) {
+        if (state != GO_UP && (state_changed === false)) {
             blocks[0].goDown();
             state = GO_DOWN;
+            state_changed = true;
         }
     };
     obj.goLeft = function() {
-        if (state != GO_RIGHT) {
+        if (state != GO_RIGHT && (state_changed === false)){
             blocks[0].goLeft();
             state = GO_LEFT;
+            state_changed = true;
         }
     };
     obj.goRight = function() {
-        if (state != GO_LEFT) {
+        if (state != GO_LEFT && (state_changed === false)) {
             blocks[0].goRight();
             state = GO_RIGHT;
+            state_changed = true;
         }
     };
 
